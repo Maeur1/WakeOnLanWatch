@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">WakeOnLanWatch</string>
+    <string name="buttonText">Turn on PC</string>
+    <string name="sent_text">PC should be on now!</string>
+    <string name="hello_square">Hello Square World!</string>
+</resources>

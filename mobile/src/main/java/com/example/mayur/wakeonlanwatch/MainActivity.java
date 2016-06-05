@@ -1,14 +1,12 @@
 package com.example.mayur.wakeonlanwatch;
 
+import android.app.PendingIntent;
+import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
@@ -18,20 +16,35 @@ import java.net.InetAddress;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button mButton;
+    boolean mWriteMode = false;
+    private NfcAdapter mNfcAdapter;
+    private PendingIntent mNfcPendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mButton = (Button) findViewById(R.id.button);
-        mButton.setOnClickListener(new View.OnClickListener() {
+        getWakeButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PacketTask p = new PacketTask();
                 p.execute();
             }
         });
+        getNfcButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+    }
+
+    private Button getWakeButton(){
+        return (Button) findViewById(R.id.wakeButton);
+    }
+
+    private Button getNfcButton(){
+        return (Button) findViewById(R.id.nfcButton);
     }
 
     public static class PacketTask extends AsyncTask<Void, Void, Void> {

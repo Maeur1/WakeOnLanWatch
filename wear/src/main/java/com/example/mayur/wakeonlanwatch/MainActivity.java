@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends Activity {
 
     private TextView mTextView;
-    private Button mButton;
     private GoogleApiClient mGoogleApiClient;
     private String nodeId;
     private final int CONNECTION_TIME_OUT_MS = 5000;
@@ -36,8 +35,7 @@ public class MainActivity extends Activity {
             public void onLayoutInflated(WatchViewStub stub) {
                 mTextView = (TextView) stub.findViewById(R.id.text);
                 retrieveDeviceNode();
-                mButton = (Button) stub.findViewById(R.id.button);
-                mButton.setOnClickListener(new View.OnClickListener() {
+                getButton().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         sendMessage();
@@ -45,6 +43,10 @@ public class MainActivity extends Activity {
                 });
             }
         });
+    }
+
+    private Button getButton(){
+        return (Button) findViewById(R.id.button);
     }
 
     private void sendMessage(){

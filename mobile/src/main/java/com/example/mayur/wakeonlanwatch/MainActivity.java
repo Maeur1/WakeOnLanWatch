@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -47,35 +48,10 @@ public class MainActivity extends AppCompatActivity {
                 p.execute();
             }
         });
-        getNfcButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //A lot of this was from https://github.com/balloob/Android-NFC-Tag-Writer/blob/master/src/nl/paulus/nfctagwriter/MainActivity.java
-
-                mNfcAdapter = NfcAdapter.getDefaultAdapter(MainActivity.this);
-                mNfcPendingIntent = PendingIntent.getActivity(MainActivity.this, 0,
-                        new Intent(MainActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-
-                enableTagWriteMode();
-
-                new AlertDialog.Builder(MainActivity.this).setTitle("Touch tag to write")
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                disableTagWriteMode();
-                            }
-
-                        }).create().show();
-            }
-        });
     }
 
     private Button getWakeButton(){
         return (Button) findViewById(R.id.wakeButton);
-    }
-
-    private Button getNfcButton(){
-        return (Button) findViewById(R.id.nfcButton);
     }
 
     @Override
@@ -86,8 +62,9 @@ public class MainActivity extends AppCompatActivity {
             NdefRecord record = NdefRecord.createMime( getString(R.string.mime) , getString(R.string.mimeData).getBytes());
             NdefMessage message = new NdefMessage(new NdefRecord[] { record });
             if (writeTag(message, detectedTag)) {
-                Toast.makeText(this, "Success: Wrote placeid to nfc tag", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "Success: Wrote to nfc tag", Toast.LENGTH_SHORT)
                         .show();
+
             }
         }
     }
@@ -103,10 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
                 WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
                 wifiManager.setWifiEnabled(true);
-                int netId = -1;
                 for (WifiConfiguration tmp : wifiManager.getConfiguredNetworks())
                     if (tmp.SSID.equals( "\""+"BarberPole5GHz"+"\""))
                     {
+                        int netId;
                         netId = tmp.networkId;
                         wifiManager.enableNetwork(netId, true);
                         break;
@@ -254,6 +231,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -261,7 +244,31 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_nfc) {
+            //A lot of this was from https://github.com/balloob/Android-NFC-Tag-Writer/blob/master/src/nl/paulus/nfctagwriter/MainActivity.java
+
+            mNfcAdapter = NfcAdapter.getDefaultAdapter(MainActivity.this);
+            mNfcPendingIntent = PendingIntent.getActivity(MainActivity.this, 0,
+                    new Intent(MainActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+            enableTagWriteMode();
+
+            new AlertDialog.Builder(MainActivity.this).setTitle("Touch tag to write")
+                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            disableTagWriteMode();
+                        }
+
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setMessage("Use this to write a NFC tag to turn on your PC")
+                    .create().show();
             return true;
         }
 

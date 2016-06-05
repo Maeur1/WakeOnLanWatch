@@ -5,11 +5,12 @@
 
     <Button
         android:layout_width="150dp"
-        android:layout_height="100dp"
+        android:layout_height="150dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:id="@+id/button"
         android:text="@string/buttonText"
+        android:background="@drawable/roundedbutton"
         />
 
 </RelativeLayout>

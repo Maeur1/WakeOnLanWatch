@@ -12,7 +12,7 @@ public class ListenerService extends WearableListenerService {
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        MainActivity.PacketTask p = new MainActivity.PacketTask();
+        MainActivity.PacketTask p = new MainActivity.PacketTask(getApplicationContext());
         p.execute();
         showToast("PC Turned On");
     }

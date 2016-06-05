@@ -2,5 +2,7 @@
     <string name="app_name">WakeOnLanWatch</string>
     <string name="buttonText">Turn on PC</string>
     <string name="nfctext">Write NFC card</string>
+    <string name="mime">application/wake.on.lan</string>
+    <string name="mimeData">testing</string>
     <string name="action_settings">Settings</string>
 </resources>

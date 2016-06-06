@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("NFC", "Tag Detected");
             PacketTask p = new PacketTask(getApplicationContext());
             p.execute();
+            Toast.makeText(getApplicationContext(), "PC Turned On", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -188,8 +189,6 @@ public class MainActivity extends AppCompatActivity {
                 //Send everyone the packet
                 socket.send(broadPacket);
 
-                Toast.makeText(mContext, "Woke Up PC", Toast.LENGTH_SHORT)
-                        .show();
                 //Debugging Purposes
                 //String s = socket.getLocalAddress().getHostAddress();
                 socket.close();

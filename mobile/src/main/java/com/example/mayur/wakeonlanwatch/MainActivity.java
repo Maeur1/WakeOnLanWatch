@@ -1,14 +1,11 @@
 package com.example.mayur.wakeonlanwatch;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -31,7 +28,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     boolean mWriteMode = false;
     private NfcAdapter mNfcAdapter;
@@ -73,23 +70,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-            NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-            if (!wifi.isConnected()) {
-
-                WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-                wifiManager.setWifiEnabled(true);
-                for (WifiConfiguration tmp : wifiManager.getConfiguredNetworks())
-                    if (tmp.SSID.equals( "\""+"BarberPole5GHz"+"\""))
-                    {
-                        int netId;
-                        netId = tmp.networkId;
-                        wifiManager.enableNetwork(netId, true);
-                        break;
-                    }
-            }
-            Log.d("NFC", "Tag Detected");
             PacketTask p = new PacketTask(getApplicationContext());
             p.execute();
             Toast.makeText(getApplicationContext(), "PC Turned On", Toast.LENGTH_SHORT).show();
@@ -181,11 +161,6 @@ public class MainActivity extends AppCompatActivity {
                 DatagramPacket broadPacket = new DatagramPacket(bytes, bytes.length, broadcast, PORT);
                 DatagramSocket socket = new DatagramSocket();
 
-                //Wait till connected
-                while (!isConnected(mContext)) {
-                    //Wait to connect
-                    Thread.sleep(1000);
-                }
                 //Send everyone the packet
                 socket.send(broadPacket);
 
@@ -197,18 +172,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Error", e.toString());
             }
             return null;
-        }
-
-        //Copied from http://stackoverflow.com/questions/8678362/wait-until-wifi-connected-on-android
-        public static boolean isConnected(Context context) {
-            ConnectivityManager connectivityManager = (ConnectivityManager)
-                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = null;
-            if (connectivityManager != null) {
-                networkInfo = connectivityManager.getActiveNetworkInfo();
-            }
-
-            return networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED;
         }
 
         private byte[] getMacBytes(String macStr) throws IllegalArgumentException {

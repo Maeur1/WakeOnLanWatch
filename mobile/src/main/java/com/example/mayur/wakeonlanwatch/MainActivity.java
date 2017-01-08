@@ -143,7 +143,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String macStr = "50:E5:49:E3:12:F4"; //MAC Address for your computer.
+            String macStr = "C8:60:00:C3:03:6F"; //MAC Address for your computer.
             int PORT = 9;
             try {
                 byte[] macBytes = getMacBytes(macStr);
